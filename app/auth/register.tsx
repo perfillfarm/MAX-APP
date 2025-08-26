@@ -60,6 +60,7 @@ export default function RegisterScreen() {
     
     try {
       setRegisterError(''); // Limpar erro anterior
+      console.log('🔥 [Register] Attempting Firebase registration...');
       const success = await register({
         name: formData.name.trim(),
         email: formData.email.trim(),
@@ -67,10 +68,12 @@ export default function RegisterScreen() {
       });
       
       if (success) {
+        console.log('✅ [Register] Registration successful, navigating to app...');
         router.replace('/(tabs)');
       }
     } catch (error: any) {
       console.error('Registration error:', error);
+      console.error('🔥 [Register] Firebase registration failed:', error.code);
       
       // Mapear erros específicos do Firebase
       let errorMessage = '';

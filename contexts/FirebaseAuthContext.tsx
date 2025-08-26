@@ -34,9 +34,11 @@ export const FirebaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       try {
         setLoading(true);
         setError(null);
+        console.log(`🔥 [Auth] Firebase Auth state change detected (project: app-max-c0a2a)`);
         console.log(`🔐 [Auth] State changed:`, firebaseUser ? `User ${firebaseUser.uid}` : 'No user');
         
         if (firebaseUser) {
+          console.log(`🔥 [Auth] User authenticated in Firebase project: app-max-c0a2a`);
           console.log(`🔐 [Auth] User authenticated: ${firebaseUser.uid}`);
           setUser(firebaseUser);
           setIsAuthenticated(true);
@@ -162,8 +164,10 @@ export const FirebaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       setLoading(true);
       setError(null);
+      console.log(`🔥 [Auth] Attempting login to Firebase project: app-max-c0a2a`);
       console.log(`🔐 Attempting login for: ${email}`);
       await FirebaseService.loginUser(email, password);
+      console.log(`✅ [Auth] Login successful in Firebase project: app-max-c0a2a`);
       console.log(`✅ Login successful for: ${email}`);
       return true;
     } catch (error: any) {
@@ -182,8 +186,10 @@ export const FirebaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       setLoading(true);
       setError(null);
+      console.log(`🔥 [Auth] Attempting registration to Firebase project: app-max-c0a2a`);
       console.log(`📝 Attempting registration for: ${userData.email}`);
       await FirebaseService.registerUser(userData.email, userData.password, userData.name);
+      console.log(`✅ [Auth] Registration successful in Firebase project: app-max-c0a2a`);
       console.log(`✅ Registration successful for: ${userData.email}`);
       return true;
     } catch (error: any) {

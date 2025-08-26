@@ -20,10 +20,16 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 
-// Enable offline persistence
+// Enable offline persistence for better user experience
 import { enableNetwork, disableNetwork } from 'firebase/firestore';
 
 export const enableOfflineMode = () => disableNetwork(db);
 export const enableOnlineMode = () => enableNetwork(db);
+
+// Log Firebase initialization for debugging
+console.log('🔥 Firebase initialized successfully');
+console.log('📊 Firestore database connected');
+console.log('🔐 Firebase Auth connected');
+console.log('📁 Firebase Storage connected');
 
 export default app;

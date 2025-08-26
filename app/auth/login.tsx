@@ -58,12 +58,15 @@ export default function LoginScreen() {
     
     try {
       setLoginError(''); // Limpar erro anterior
+      console.log('🔥 [Login] Attempting Firebase authentication...');
       const success = await login(email.trim(), password);
       if (success) {
+        console.log('✅ [Login] Authentication successful, navigating to app...');
         router.replace('/(tabs)');
       }
     } catch (error: any) {
       console.error('Login error:', error);
+      console.error('🔥 [Login] Firebase authentication failed:', error.code);
       
       // Mapear erros específicos do Firebase
       let errorMessage = '';

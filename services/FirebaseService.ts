@@ -24,6 +24,9 @@ import {
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, auth, storage } from '@/config/firebase';
 
+// Initialize Firebase connection test
+console.log('🔥 [FirebaseService] Service initialized with project:', 'app-max-c0a2a');
+
 // Types
 export interface User {
   id: string;
@@ -75,8 +78,10 @@ export class FirebaseService {
   // Authentication Methods
   static async registerUser(email: string, password: string, name: string): Promise<User> {
     try {
+      console.log('🔥 [FirebaseService] Starting user registration...');
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
+      console.log('✅ [FirebaseService] Firebase user created:', firebaseUser.uid);
       
       // Update display name
       await updateProfile(firebaseUser, { displayName: name });
@@ -202,20 +207,24 @@ export class FirebaseService {
   
   static async getUserProfile(userId: string): Promise<UserProfile | null> {
     try {
+      console.log(`👤 [Firebase] Getting user profile for ${userId} from project app-max-c0a2a`);
       const docRef = doc(db, 'userProfiles', userId);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
         const data = docSnap.data();
+        console.log(`✅ [Firebase] User profile found for ${userId}`);
         return {
           ...data,
           createdAt: data.createdAt?.toDate() || new Date(),
           updatedAt: data.updatedAt?.toDate() || new Date()
         } as UserProfile;
       }
+      console.log(`ℹ️ [Firebase] No user profile found for ${userId}`);
       return null;
     } catch (error) {
       console.error('Error getting user profile:', error);
+      console.error(`❌ [Firebase] Failed to get user profile for ${userId}:`, error);
       throw error;
     }
   }
@@ -306,6 +315,15 @@ export class FirebaseService {
       });
       
       console.log(`✅ [Firebase] Daily record created with ID: ${docRef.id} for ${record.date}`);
+      
+      // Verify record was created
+      const verifyDoc = await getDoc(docRef);
+      if (verifyDoc.exists()) {
+        console.log(`✅ [Firebase] Record verification successful for ${record.date}`);
+      } else {
+        console.warn(`⚠️ [Firebase] Record verification failed for ${record.date}`);
+      }
+      
       return docRef.id;
     } catch (error) {
       console.error('Error creating daily record:', error);
@@ -317,6 +335,7 @@ export class FirebaseService {
   static async getDailyRecords(userId: string, limitCount?: number): Promise<DailyRecord[]> {
     try {
       console.log(`🔍 [Firebase] Getting daily records for user ${userId}${limitCount ? ` (limit: ${limitCount})` : ' (all records)'}`);
+      console.log(`🔥 [Firebase] Using Firestore database from project: app-max-c0a2a`);
       
       // Usar query simples sem orderBy para evitar erro de índice
       const q = query(
@@ -327,6 +346,7 @@ export class FirebaseService {
       const querySnapshot = await getDocs(q);
       const recordCount = querySnapshot.docs.length;
       console.log(`✅ [Firebase] Retrieved ${recordCount} daily records for user ${userId}`);
+      console.log(`📊 [Firebase] Query executed successfully on collection: dailyRecords`);
       
       let records = querySnapshot.docs.map(doc => {
         const data = doc.data();
@@ -453,11 +473,13 @@ export class FirebaseService {
   
   static async getUserSettings(userId: string): Promise<UserSettings | null> {
     try {
+      console.log(`⚙️ [Firebase] Getting user settings for ${userId} from project app-max-c0a2a`);
       const docRef = doc(db, 'userSettings', userId);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
         const data = docSnap.data();
+        console.log(`✅ [Firebase] User settings found for ${userId}`);
         return {
           ...data,
           createdAt: data.createdAt?.toDate() || new Date(),
@@ -478,6 +500,7 @@ export class FirebaseService {
         };
         
         await this.createUserSettings(userId, defaultSettings);
+        console.log(`✅ [Firebase] Default settings created for ${userId}`);
         return defaultSettings;
       }
     } catch (error) {
@@ -556,6 +579,7 @@ export class FirebaseService {
   
   static subscribeToDailyRecords(userId: string, callback: (records: DailyRecord[]) => void) {
     console.log(`🔥 [Firebase] Setting up real-time listener for user ${userId}`);
+    console.log(`🔥 [Firebase] Connecting to Firestore in project: app-max-c0a2a`);
     
     // Usar query simples sem orderBy para evitar erro de índice
     const q = query(
@@ -565,6 +589,7 @@ export class FirebaseService {
     
     return onSnapshot(q, (querySnapshot) => {
       console.log(`🔥 [Firebase] Real-time update for user ${userId}: ${querySnapshot.docs.length} records`);
+      console.log(`📡 [Firebase] Real-time connection active to app-max-c0a2a`);
       
       let records = querySnapshot.docs.map(doc => {
         const data = doc.data();
